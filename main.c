@@ -183,7 +183,7 @@ int open_file(char *file1, char *file2 ,int operation)
                     crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
-                    printf("left = %x\n", left);
+                    printf("key = %x\n", left);
                 }
             }
             break;
