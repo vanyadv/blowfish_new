@@ -183,7 +183,7 @@ int open_file(char *file1, char *file2 ,int operation)
                     crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
-                    printf("key = %x\n", left);
+                    //printf("key = %x\n", left);
                 }
             }
             break;
@@ -253,12 +253,12 @@ int main( )
     {
         open_file("blowfish.h", "new3.txt", '1');
     }
-  scanf("%x",&key);
+  /*scanf("%x",&key);
         if(left!= key)
         {
         printf("invalid key");
         }
-    else
+    else*/
         {
         open_file("new3.txt", "new4.txt", '2');
         
