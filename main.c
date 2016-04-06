@@ -33,22 +33,6 @@ unsigned long F(blowfish_vars *chr, unsigned long x)
     return ((chr->sbox[0][(x >> 24) & 0xFF] + chr->sbox[1][(x >> 16) & 0xFF]) ^ chr->sbox[2][(x >> 8) & 0xFF]) + chr->sbox[3][(x) & 0xFF];
 }
 
-//decrypt
-void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
-{
-    int i;
-
-    for (i = 17; i > 1; i--)
-    {
-        *left ^= vars->P[i];
-        *right ^= F(vars, *left);
-        swap(right, left);
-    }
-
-    swap(right, left);
-    *left ^= vars->P[0];
-    *right ^= vars->P[1];
-}
 
 //crypt
 void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right) 
@@ -65,6 +49,23 @@ void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
     swap(right, left);
     *right ^= vars->P[16]; 
     *left ^= vars->P[17];    
+}
+
+//decrypt
+void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
+{
+    int i;
+
+    for (i = 17; i > 1; i--)
+    {
+        *left ^= vars->P[i];
+        *right ^= F(vars, *left);
+        swap(right, left);
+    }
+
+    swap(right, left);
+    *left ^= vars->P[0];
+    *right ^= vars->P[1];
 }
 
 int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
