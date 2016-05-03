@@ -13,7 +13,7 @@ blowfish_vars *vars;
 int changer = 0;
 void instruction()
 {
-    printf("Welcome to the program data encryption Enigma machine,with an operating algorithm based on the Blowfish algorithm.\n");
+    printf("Welcome to the program data encryption Enigma by Belarus machine,with an operating algorithm based on the Blowfish algorithm.\n");
     printf("The commands necessary to encrypt and decrypt files:\n");
     printf("1.In order to encrypt a file click 1.\n");
     printf("2.In order to decrypt the file,press the 2 button.\n");
@@ -34,7 +34,7 @@ unsigned long F(blowfish_vars *chr, unsigned long x)
 }
 
 
-//crypt
+
 void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right) 
 {   
     int i;
@@ -51,7 +51,7 @@ void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
     *left ^= vars->P[17];    
 }
 
-//decrypt
+
 void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
 {
     int i;
@@ -137,15 +137,8 @@ int open_file(char *file1, char *file2 ,int operation)
         printf("invalid  file!!!\n");
         return 0;
     }
-    
-    printf("change the operation\n");
-    scanf("%d",&changer);
-  switch(changer)
-  { 
-            case 0:
-            printf("exit\n");
-            break;
-            case 1:
+ 
+ 
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -183,11 +176,9 @@ int open_file(char *file1, char *file2 ,int operation)
                     crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
-                    //printf("key = %x\n", left);
+                    printf("key = %x\n", left);
                 }
             }
-            break;
-            case 2:
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -227,9 +218,9 @@ int open_file(char *file1, char *file2 ,int operation)
                 }
             
             }
-            break;
+           
 
-}
+
 
     fclose(f1);
     fclose(f2);
@@ -240,29 +231,26 @@ int open_file(char *file1, char *file2 ,int operation)
 int main( )
 {
     unsigned long key;
-    /*char a[50];
+    char a[50];
     char b[50];
-    char c[50];
-    scanf("%c",&a);
-    scanf("%c",&b);
-    scanf("%c",&a);*/
+    char bet[50];
+ 
     instruction();
     vars = (blowfish_vars *)malloc(sizeof(blowfish_vars));
-    
-    if(changer=1)
-    {
-        open_file("blowfish.h", "new3.txt", '1');
-    }
-  /*scanf("%x",&key);
-        if(left!= key)
-        {
-        printf("invalid key");
-        }
-    else*/
-        {
-        open_file("new3.txt", "new4.txt", '2');
+    printf("input: ");
+    scanf("%s",a);
+    printf("between: ");
+    scanf("%s",bet);
+    printf("output: ");
+    scanf("%s",b);
+
+
+        open_file(a, bet, '1');
+  
+
+        open_file(bet, b, '2');
         
-        }
+  
     free(vars);
 
     return 0;
