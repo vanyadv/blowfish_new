@@ -1,4 +1,3 @@
-
 #include <locale.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,7 +12,7 @@ blowfish_vars *vars;
 int changer = 0;
 void instruction()
 {
-    printf("Welcome to the program data encryption Enigma by Belarus machine,with an operating algorithm based on the Blowfish algorithm.\n");
+    printf("Welcome to the program data encryption Enigma machine,with an operating algorithm based on the Blowfish algorithm.\n");
     printf("The commands necessary to encrypt and decrypt files:\n");
     printf("1.In order to encrypt a file click 1.\n");
     printf("2.In order to decrypt the file,press the 2 button.\n");
@@ -33,25 +32,6 @@ unsigned long F(blowfish_vars *chr, unsigned long x)
     return ((chr->sbox[0][(x >> 24) & 0xFF] + chr->sbox[1][(x >> 16) & 0xFF]) ^ chr->sbox[2][(x >> 8) & 0xFF]) + chr->sbox[3][(x) & 0xFF];
 }
 
-
-
-void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right) 
-{   
-    int i;
-
-    for (i = 0; i < 16; i++)   
-    {
-        *left ^= vars->P[i]; 
-        *right ^= F(vars, *left);  
-        swap(right, left);    
-    }
-
-    swap(right, left);
-    *right ^= vars->P[16]; 
-    *left ^= vars->P[17];    
-}
-
-
 void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
 {
     int i;
@@ -66,6 +46,22 @@ void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
     swap(right, left);
     *left ^= vars->P[0];
     *right ^= vars->P[1];
+}
+
+
+void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right) 
+{   
+    int i;
+
+    for (i = 0; i < 16; i++)   
+        *left ^= vars->P[i]; 
+        *right ^= F(vars, *left);  
+        swap(right, left);    
+    }
+
+    swap(right, left);
+    *right ^= vars->P[16]; 
+    *left ^= vars->P[17];   
 }
 
 int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
@@ -137,8 +133,15 @@ int open_file(char *file1, char *file2 ,int operation)
         printf("invalid  file!!!\n");
         return 0;
     }
- 
- 
+    
+    printf("change the operation\n");
+    scanf("%d",&changer);
+  switch(changer)
+  { 
+            case 0:
+            printf("exit\n");
+            break;
+            case 1:
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -176,9 +179,11 @@ int open_file(char *file1, char *file2 ,int operation)
                     crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
-                    printf("key = %x\n", left);
+                    printf("key= %x\n", left);
                 }
             }
+            break;
+            case 2:
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -218,9 +223,9 @@ int open_file(char *file1, char *file2 ,int operation)
                 }
             
             }
-           
+            break;
 
-
+}
 
     fclose(f1);
     fclose(f2);
@@ -231,28 +236,32 @@ int open_file(char *file1, char *file2 ,int operation)
 int main( )
 {
     unsigned long key;
-    char a[50];
-    char b[50];
+    char inp[50];
     char bet[50];
- 
+    char out[50];
     instruction();
     vars = (blowfish_vars *)malloc(sizeof(blowfish_vars));
-    printf("input: ");
-    scanf("%s",a);
-    printf("between: ");
+    printf("input: \n");
+    scanf("%s",inp);
+    printf("between: \n");
     scanf("%s",bet);
-    printf("output: ");
-    scanf("%s",b);
-
-
-        open_file(a, bet, '1');
+     printf("output: \n");
+    scanf("%s",out);
   
-
-        open_file(bet, b, '2');
+    if(changer=1)
+    {
+        open_file(inp,bet, '1');
+    }
+  scanf("%x",&key);
+        if(left!= key)
+        {
+        printf("invalid key");
+        }
+    else
+        {
+        open_file(bet,out, '2');
         
-  
+        }
     free(vars);
-
     return 0;
 }
-
