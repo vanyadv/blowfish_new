@@ -213,7 +213,7 @@ int main(int argc, char **argv)
     unsigned long key;
     char inp[50];
     char out[50];
-    char Key[50];
+    char Key[10];
     char test[50];
     int cycle;
     int new;
@@ -223,8 +223,8 @@ int main(int argc, char **argv)
     scanf("%s",inp);
     printf("output: \n");
     scanf("%s",out);
-     printf("test file: \n");
-            scanf("%s",test);
+    printf("test file: \n");
+    scanf("%s",test);
 
      if (!vars)
     {
@@ -238,29 +238,24 @@ int main(int argc, char **argv)
         puts("Key initialization failed");
         return -1;
     }
- FILE *TESTKEY = fopen(test, "w");
-    printf("change the operation\n");
-    scanf("%d",&new);
-switch(new)
-{
-    case 1:
-    open_file(inp,out, 1);
-        fprintf(TESTKEY,"%x",left) ;
-    break;
-    case 2:
-     open_file(inp,out, 2);
-            fgets(test_key,8,TESTKEY);
+ FILE *TESTKEY = fopen(test, "r");
+
+            fgets(test_key,10,TESTKEY);
+            printf("%s\n",test_key);
             printf("unlock file: \n");
             scanf("%s",Key);
-        if (Key!=test_key){
-            printf("you didn't have key");
-            exit(0);
-                }
-                break;
-            default:
-            printf("exit\n");
-            return 0;
-}
+            if(strcmp(Key,test_key)==0)
+           {
+            printf("great");
+            open_file(inp,out, 2);
+           }
+           else{
+                       printf("YOU DIDN'T KNOW PASSWORD");
+                       return 0;
+                }                
+                      
+                
+            
     fclose(TESTKEY);
         free(vars);
     system("PAUSE");
