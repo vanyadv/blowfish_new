@@ -11,11 +11,7 @@ blowfish_vars *vars;
 int changer = 0;
 void instruction()
 {
-    printf("Welcome to the program data encryption Enigma by Belarus machine,with an operating algorithm based on the Blowfish algorithm.\n");
-    printf("The commands necessary to encrypt and decrypt files:\n");
-    printf("1.In order to encrypt a file click 1.\n");
-    printf("2.In order to decrypt the file,press the 2 button.\n");
-    printf("3.In order to do nothing, press 0 2 times .\n");
+    
 }
 void swap(unsigned long *a, unsigned long *b)
 {
@@ -40,19 +36,6 @@ void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
     swap(right, left);
     *right ^= vars->P[16]; 
     *left ^= vars->P[17];    
-}
-void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
-{
-    int i;
-    for (i = 17; i > 1; i--)
-    {
-        *left ^= vars->P[i];
-        *right ^= Function_x(vars, *left);
-        swap(right, left);
-    }
-    swap(right, left);
-    *left ^= vars->P[0];
-    *right ^= vars->P[1];
 }
 int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
 {
@@ -90,7 +73,7 @@ int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
     return -1;
 }
 WIN32_FIND_DATA Find_file;  
-int open_file(char *file1, char *file2 ,int changer)
+int open_file(char *file1, char *file2 )
 {
 
     HANDLE hFile;
@@ -112,10 +95,6 @@ int open_file(char *file1, char *file2 ,int changer)
         return 0;
 
     }
-
-    switch(changer)
-  { 
-            case 1:
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -157,52 +136,6 @@ int open_file(char *file1, char *file2 ,int changer)
                  
                 }
             }
-            break;
-            case 2:
-
-            while (fread(&buffer, 4, 1, f1))
-            {
-                if (flag == 1)
-                {
-                    left = buffer;
-                    flag = 2;
-                }
-                else
-                {
-                    right = buffer;
-                    flag = 1;
-                    decrypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                }
-                all_text += 4;                    
-            }
-            if(size > all_text)
-            {
-                if(flag == 1)
-                {
-                    fread(&buffer, (size - all_text), 1, f1);
-                    right = buffer;
-                    decrypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                }
-                else
-                {
-                    fread(&buffer, (size - all_text), 1, f1);
-                    left = buffer;
-                    right = 0;
-                    decrypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                }
-            }
-            break;
-                 default:
-            printf("exit\n");
-            return 0;
-}
-    
     fclose(f1);
     fclose(f2);
     return 1;
@@ -239,28 +172,8 @@ int main(int argc, char **argv)
         return -1;
     }
  FILE *TESTKEY = fopen(test, "w");
-    printf("change the operation\n");
-    scanf("%d",&new);
-switch(new)
-{
-    case 1:
-    open_file(inp,out, 1);
-        fprintf(TESTKEY,"%x",left) ;
-    break;
-    case 2:
-     open_file(inp,out, 2);
-            fgets(test_key,8,TESTKEY);
-            printf("unlock file: \n");
-            scanf("%s",Key);
-        if (Key!=test_key){
-            printf("you didn't have key");
-            exit(0);
-                }
-                break;
-            default:
-            printf("exit\n");
-            return 0;
-}
+    open_file(inp,out);
+        fprintf(TESTKEY,"%x",left);  
     fclose(TESTKEY);
         free(vars);
     system("PAUSE");

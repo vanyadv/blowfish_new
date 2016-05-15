@@ -11,11 +11,7 @@ blowfish_vars *vars;
 int changer = 0;
 void instruction()
 {
-    printf("Welcome to the program data encryption Enigma by Belarus machine,with an operating algorithm based on the Blowfish algorithm.\n");
-    printf("The commands necessary to encrypt and decrypt files:\n");
-    printf("1.In order to encrypt a file click 1.\n");
-    printf("2.In order to decrypt the file,press the 2 button.\n");
-    printf("3.In order to do nothing, press 0 2 times .\n");
+
 }
 void swap(unsigned long *a, unsigned long *b)
 {
@@ -90,7 +86,7 @@ int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
     return -1;
 }
 WIN32_FIND_DATA Find_file;  
-int open_file(char *file1, char *file2 ,int changer)
+int open_file(char *file1, char *file2)
 {
 
     HANDLE hFile;
@@ -112,54 +108,6 @@ int open_file(char *file1, char *file2 ,int changer)
         return 0;
 
     }
-
-    switch(changer)
-  { 
-            case 1:
-            while (fread(&buffer, 4, 1, f1))
-            {
-                if (flag == 1)
-                {
-                    left = buffer;
-                    flag = 2;
-                }
-                else
-                {
-                    right = buffer;
-                    flag = 1;
-                    crypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                }   
-                
-                all_text += 4;        
-            }
-
-            if(size > all_text)
-            {
-                if(flag == 1)
-                {
-                    fread(&buffer, (size - all_text), 1, f1);
-                    right = buffer;
-                    crypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                }
-                else
-                {
-                    fread(&buffer, (size - all_text), 1, f1);
-                    left = buffer;
-                    right = 0;
-                    crypt(vars, &left, &right);
-                    fwrite(&left, 4, 1, f2);
-                    fwrite(&right, 4, 1, f2);
-                    printf("key= %x\n", left); 
-                 
-                }
-            }
-            break;
-            case 2:
-
             while (fread(&buffer, 4, 1, f1))
             {
                 if (flag == 1)
@@ -197,11 +145,6 @@ int open_file(char *file1, char *file2 ,int changer)
                     fwrite(&right, 4, 1, f2);
                 }
             }
-            break;
-                 default:
-            printf("exit\n");
-            return 0;
-}
     
     fclose(f1);
     fclose(f2);
@@ -246,8 +189,8 @@ int main(int argc, char **argv)
             scanf("%s",Key);
             if(strcmp(Key,test_key)==0)
            {
-            printf("great");
-            open_file(inp,out, 2);
+            printf("great\n");
+            open_file(inp,out);
            }
            else{
                        printf("YOU DIDN'T KNOW PASSWORD");
