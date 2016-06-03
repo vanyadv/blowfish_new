@@ -9,10 +9,6 @@ unsigned long left, right;
 char test_key[20];
 blowfish_vars *vars;
 int changer = 0;
-void instruction()
-{
-    
-}
 void swap(unsigned long *a, unsigned long *b)
 {
     unsigned long temp;
@@ -36,19 +32,6 @@ void crypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
     swap(right, left);
     *right ^= vars->P[16]; 
     *left ^= vars->P[17];    
-}
-void decrypt(blowfish_vars *vars, unsigned long *left, unsigned long *right)
-{
-    int i;
-    for (i = 17; i > 1; i--)
-    {
-        *left ^= vars->P[i];
-        *right ^= Function_x(vars, *left);
-        swap(right, left);
-    }
-    swap(right, left);
-    *left ^= vars->P[0];
-    *right ^= vars->P[1];
 }
 int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
 {
@@ -86,7 +69,7 @@ int inicialization(blowfish_vars *vars, unsigned char *left, size_t left_len)
     return -1;
 }
 WIN32_FIND_DATA Find_file;  
-int open_file(char *file1, char *file2)
+int open_file(char *file1, char *file2 )
 {
 
     HANDLE hFile;
@@ -119,19 +102,21 @@ int open_file(char *file1, char *file2)
                 {
                     right = buffer;
                     flag = 1;
-                    decrypt(vars, &left, &right);
+                    crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
-                }
-                all_text += 4;                    
+                }   
+                
+                all_text += 4;        
             }
+
             if(size > all_text)
             {
                 if(flag == 1)
                 {
                     fread(&buffer, (size - all_text), 1, f1);
                     right = buffer;
-                    decrypt(vars, &left, &right);
+                    crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
                 }
@@ -140,12 +125,13 @@ int open_file(char *file1, char *file2)
                     fread(&buffer, (size - all_text), 1, f1);
                     left = buffer;
                     right = 0;
-                    decrypt(vars, &left, &right);
+                    crypt(vars, &left, &right);
                     fwrite(&left, 4, 1, f2);
                     fwrite(&right, 4, 1, f2);
+                    printf("key= %x\n", left); 
+                 
                 }
             }
-    
     fclose(f1);
     fclose(f2);
     return 1;
@@ -156,18 +142,16 @@ int main(int argc, char **argv)
     unsigned long key;
     char inp[50];
     char out[50];
-    char Key[10];
+    char Key[50];
     char test[50];
     int cycle;
     int new;
     instruction();
     vars = (blowfish_vars *)malloc(sizeof(blowfish_vars));
-    printf("File for decrypt: \n");
+    printf("File for crypt: \n");
     scanf("%s",inp);
-    printf("Output file: \n");
+    printf("Crypt file: \n");
     scanf("%s",out);
-   
-
      if (!vars)
     {
         puts("Insufficient memory allocated");
@@ -180,29 +164,9 @@ int main(int argc, char **argv)
         puts("Key initialization failed");
         return -1;
     }
-    FILE *TESTKEY = fopen("Key.txt", "r");
-        if(test == NULL)
-    {
-        printf("YOU DON'T HAVE FILE WITH PASSWORD");
-        return 0;
-    }
-            fgets(test_key,10,TESTKEY);
-            printf("%s\n",test_key);
-            printf("unlock password: \n");
-            scanf("%s",Key);
-            if(strcmp(Key,test_key)==0)
-           {
-            printf("great\n");
-            open_file(inp,out);
-           }
-           else
-           {
-                       printf("YOU DIDN'T KNOW PASSWORD");
-                       return 0;
-            }                
-                      
-                
-            
+ FILE *TESTKEY = fopen("Key.txt", "w");
+    open_file(inp,out);
+        fprintf(TESTKEY,"%x",left);  
     fclose(TESTKEY);
         free(vars);
     system("PAUSE");
